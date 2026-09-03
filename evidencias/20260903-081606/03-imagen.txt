@@ -1,0 +1,3 @@
+Pod: portal-86bfdcd887-dg5d9
+Imagen: nginx:stable-alpine
+Image ID: docker.io/library/nginx@sha256:02b1b2a0445514891a14aa371845f6085d5d9d10d385b30d6aad606a50a29a05

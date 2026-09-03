@@ -1,0 +1,11 @@
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                SELECTOR
+deployment.apps/portal   4/4     4            4           9m22s   web          nginx:stable-alpine   app=portal
+
+NAME                          READY   STATUS    RESTARTS   AGE     IP           NODE      NOMINATED NODE   READINESS GATES
+pod/portal-86bfdcd887-dg5d9   1/1     Running   0          2m49s   10.244.0.7   asi-k8s   <none>           <none>
+pod/portal-86bfdcd887-dv4d7   1/1     Running   0          6m9s    10.244.0.6   asi-k8s   <none>           <none>
+pod/portal-86bfdcd887-lwccb   1/1     Running   0          6m9s    10.244.0.5   asi-k8s   <none>           <none>
+pod/portal-86bfdcd887-ncxwg   1/1     Running   0          9m22s   10.244.0.3   asi-k8s   <none>           <none>
+
+NAME             TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE     SELECTOR
+service/portal   NodePort   10.97.10.154   <none>        80:31047/TCP   9m22s   app=portal

@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tp-kubernetes
+  labels:
+    app.kubernetes.io/part-of: portal-academico
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portal-config
+  namespace: tp-kubernetes
+  labels:
+    app.kubernetes.io/name: portal
+    app.kubernetes.io/part-of: portal-academico
+data:
+  nginx.conf: |
+    worker_processes 1;
+    events { worker_connections 1024; }
+    http {
+      access_log /dev/stdout;
+      error_log /dev/stderr warn;
+
+      server {
+        listen 8080;
+        server_tokens off;
+
+        location / {
+          default_type text/plain;
+          add_header Cache-Control "no-store";
+          return 200 "Portal academico - ASI 2026\nPod: $hostname\n";
+        }
+
+        location = /healthz {
+          default_type text/plain;
+          access_log off;
+          return 200 "ok\n";
+        }
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal
+  namespace: tp-kubernetes
+  labels:
+    app.kubernetes.io/name: portal
+    app.kubernetes.io/part-of: portal-academico
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: portal
+  template:
+    metadata:
+      labels:
+        app: portal
+        app.kubernetes.io/name: portal
+        app.kubernetes.io/part-of: portal-academico
+    spec:
+      containers:
+        - name: web
+          image: nginx:stable-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: portal-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: portal
+  namespace: tp-kubernetes
+  labels:
+    app.kubernetes.io/name: portal
+    app.kubernetes.io/part-of: portal-academico
+spec:
+  type: NodePort
+  selector:
+    app: portal
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
