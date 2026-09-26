@@ -1,0 +1,17 @@
+Docker Server: 29.8.1
+minikube version: v1.39.0
+commit: 7a9f6a841470a207de8cf4bafcccee0969d8ba10
+Client Version: v1.37.0
+Kustomize Version: v5.8.1
+* [asi-k8s] minikube v1.39.0 on Linuxmint 22.3
+* Using the docker driver based on existing profile
+* Starting "asi-k8s" primary control-plane node in "asi-k8s" cluster
+* Pulling base image v0.0.51 ...
+* Preparing Kubernetes v1.37.0 on containerd 2.3.4 ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: default-storageclass, storage-provisioner
+* Done! kubectl is now configured to use "asi-k8s" cluster and "default" namespace by default
+node/asi-k8s condition met
+NAME      STATUS   ROLES           AGE     VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION             CONTAINER-RUNTIME
+asi-k8s   Ready    control-plane   9m21s   v1.37.0   192.168.49.2   <none>        Debian GNU/Linux 12 (bookworm)   7.0.0-34-generic (amd64)   containerd://2.3.4

@@ -1,0 +1,40 @@
+01: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+02: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-ddqbk
+03: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+04: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+05: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-ddqbk
+06: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-ddqbk
+07: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+08: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+09: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+10: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-ddqbk
+11: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+12: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-ddqbk
+13: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-ddqbk
+14: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-ddqbk
+15: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+16: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+17: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+18: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+19: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w
+20: Portal academico - ASI 2026
+Pod: portal-86bfdcd887-m9s7w

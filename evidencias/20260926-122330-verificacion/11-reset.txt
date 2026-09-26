@@ -1,0 +1,9 @@
+deployment.apps/portal scaled
+deployment "portal" successfully rolled out
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+portal   2/2     2            2           12m
+NAME                      READY   STATUS      RESTARTS        AGE   IP           NODE      NOMINATED NODE   READINESS GATES
+portal-86bfdcd887-4p6jf   0/1     Completed   0               11s   10.244.0.7   asi-k8s   <none>           <none>
+portal-86bfdcd887-hj76j   1/1     Running     0               18s   10.244.0.6   asi-k8s   <none>           <none>
+portal-86bfdcd887-m9s7w   1/1     Running     1 (5m53s ago)   12m   10.244.0.4   asi-k8s   <none>           <none>
+portal-86bfdcd887-s9brc   0/1     Completed   0               18s   10.244.0.5   asi-k8s   <none>           <none>

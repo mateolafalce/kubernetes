@@ -1,0 +1,27 @@
+NAME                      READY   STATUS    RESTARTS        AGE
+portal-86bfdcd887-ddqbk   1/1     Running   1 (5m42s ago)   12m
+portal-86bfdcd887-hj76j   1/1     Running   0               7s
+portal-86bfdcd887-m9s7w   1/1     Running   1 (5m42s ago)   12m
+portal-86bfdcd887-s9brc   1/1     Running   0               7s
+portal-86bfdcd887-ddqbk   1/1     Terminating   1 (5m42s ago)   12m
+portal-86bfdcd887-4p6jf   0/1     Pending       0               0s
+portal-86bfdcd887-4p6jf   0/1     Pending       0               0s
+portal-86bfdcd887-ddqbk   1/1     Terminating   1 (5m42s ago)   12m
+portal-86bfdcd887-4p6jf   0/1     ContainerCreating   0               0s
+portal-86bfdcd887-ddqbk   0/1     Completed           1 (5m43s ago)   12m
+portal-86bfdcd887-4p6jf   0/1     ContainerCreating   0               1s
+portal-86bfdcd887-ddqbk   0/1     Completed           1 (5m43s ago)   12m
+portal-86bfdcd887-ddqbk   0/1     Completed           1 (5m43s ago)   12m
+portal-86bfdcd887-4p6jf   0/1     Running             0               1s
+portal-86bfdcd887-4p6jf   0/1     Running             0               3s
+portal-86bfdcd887-4p6jf   1/1     Running             0               8s
+portal-86bfdcd887-4p6jf   1/1     Terminating         0               10s
+portal-86bfdcd887-s9brc   1/1     Terminating         0               17s
+portal-86bfdcd887-4p6jf   1/1     Terminating         0               10s
+portal-86bfdcd887-s9brc   1/1     Terminating         0               18s
+portal-86bfdcd887-4p6jf   0/1     Completed           0               11s
+portal-86bfdcd887-s9brc   0/1     Completed           0               18s
+portal-86bfdcd887-4p6jf   0/1     Completed           0               11s
+portal-86bfdcd887-4p6jf   0/1     Completed           0               11s
+portal-86bfdcd887-s9brc   0/1     Completed           0               18s
+portal-86bfdcd887-s9brc   0/1     Completed           0               18s

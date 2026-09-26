@@ -1,0 +1,14 @@
+namespace/tp-kubernetes unchanged
+configmap/portal-config unchanged
+deployment.apps/portal unchanged
+service/portal unchanged
+deployment "portal" successfully rolled out
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                SELECTOR
+deployment.apps/portal   2/2     2            2           7m59s   web          nginx:stable-alpine   app=portal
+
+NAME                          READY   STATUS    RESTARTS      AGE     IP           NODE      NOMINATED NODE   READINESS GATES
+pod/portal-86bfdcd887-ddqbk   1/1     Running   1 (55s ago)   7m59s   10.244.0.2   asi-k8s   <none>           <none>
+pod/portal-86bfdcd887-m9s7w   1/1     Running   1 (55s ago)   7m59s   10.244.0.4   asi-k8s   <none>           <none>
+
+NAME             TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE     SELECTOR
+service/portal   NodePort   10.98.226.225   <none>        80:31222/TCP   7m59s   app=portal

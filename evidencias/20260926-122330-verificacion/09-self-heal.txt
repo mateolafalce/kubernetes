@@ -1,0 +1,9 @@
+Pod seleccionado para eliminar: portal-86bfdcd887-ddqbk
+pod "portal-86bfdcd887-ddqbk" deleted from tp-kubernetes namespace
+El Deployment recuperó 4 réplicas listas.
+Pod de reemplazo observado: portal-86bfdcd887-4p6jf
+NAME                      READY   STATUS    RESTARTS        AGE   IP           NODE      NOMINATED NODE   READINESS GATES
+portal-86bfdcd887-4p6jf   1/1     Running   0               9s    10.244.0.7   asi-k8s   <none>           <none>
+portal-86bfdcd887-hj76j   1/1     Running   0               16s   10.244.0.6   asi-k8s   <none>           <none>
+portal-86bfdcd887-m9s7w   1/1     Running   1 (5m51s ago)   12m   10.244.0.4   asi-k8s   <none>           <none>
+portal-86bfdcd887-s9brc   1/1     Running   0               16s   10.244.0.5   asi-k8s   <none>           <none>

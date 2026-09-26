@@ -1,0 +1,11 @@
+deployment.apps/portal scaled
+Waiting for deployment "portal" rollout to finish: 2 of 4 updated replicas are available...
+Waiting for deployment "portal" rollout to finish: 3 of 4 updated replicas are available...
+deployment "portal" successfully rolled out
+NAME     READY   UP-TO-DATE   AVAILABLE   AGE
+portal   4/4     4            4           12m
+NAME                      READY   STATUS    RESTARTS        AGE   IP           NODE      NOMINATED NODE   READINESS GATES
+portal-86bfdcd887-ddqbk   1/1     Running   1 (5m41s ago)   12m   10.244.0.2   asi-k8s   <none>           <none>
+portal-86bfdcd887-hj76j   1/1     Running   0               6s    10.244.0.6   asi-k8s   <none>           <none>
+portal-86bfdcd887-m9s7w   1/1     Running   1 (5m41s ago)   12m   10.244.0.4   asi-k8s   <none>           <none>
+portal-86bfdcd887-s9brc   1/1     Running   0               6s    10.244.0.5   asi-k8s   <none>           <none>

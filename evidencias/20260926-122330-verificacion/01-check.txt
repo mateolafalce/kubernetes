@@ -1,0 +1,1 @@
+YAML válido y renderizado correctamente: /home/mateo/dev/kubernetes/kubernetes-lab.yaml

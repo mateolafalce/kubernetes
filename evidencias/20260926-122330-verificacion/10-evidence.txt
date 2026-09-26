@@ -1,0 +1,2 @@
+Evidencia textual guardada en /home/mateo/dev/kubernetes/evidencias/20260926-123141
+Las cinco capturas requeridas por la consigna deben tomarse durante cada etapa.
