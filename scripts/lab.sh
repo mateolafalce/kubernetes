@@ -11,6 +11,8 @@ readonly DEPLOYMENT="${DEPLOYMENT:-portal}"
 readonly SERVICE="${SERVICE:-portal}"
 readonly LABEL_SELECTOR="app=portal"
 readonly TIMEOUT="${TIMEOUT:-180s}"
+readonly MINIKUBE_CPUS="${MINIKUBE_CPUS:-2}"
+readonly MINIKUBE_MEMORY="${MINIKUBE_MEMORY:-2048}"
 
 die() {
   printf 'Error: %s\n' "$*" >&2
@@ -53,7 +55,9 @@ start_cluster() {
   minikube version
   kubectl version --client
 
-  minikube start -p "${PROFILE}" --driver=docker --cpus=2 --memory=4096
+  minikube start -p "${PROFILE}" --driver=docker \
+    --cpus="${MINIKUBE_CPUS}" --memory="${MINIKUBE_MEMORY}" \
+    --preload=false --cache-images=false
   kubectl config use-context "${PROFILE}" >/dev/null
   kubectl wait --for=condition=Ready node --all --timeout="${TIMEOUT}"
   kubectl get nodes -o wide

@@ -28,7 +28,27 @@ Kustomize, integrado en `kubectl`.
 - Minikube.
 - kubectl.
 - curl y Bash.
-- Al menos 2 CPU, 4 GB de memoria asignables al clúster y 20 GB libres.
+- Al menos 2 CPU y 2 GiB de memoria asignables al clúster.
+- Espacio libre para las imágenes, contenedores y logs de Docker. La guía general
+  de Minikube recomienda 20 GB libres; con el driver Docker usado aquí no se
+  reserva un disco virtual de 20 GB. El consumo real depende de las imágenes
+  descargadas y los datos acumulados.
+
+El arranque asigna 2048 MiB de RAM y desactiva la precarga y la caché adicional
+de imágenes de Minikube para reducir copias en disco. Las imágenes necesarias
+se descargan en el runtime del clúster; el primer arranque puede tardar más y
+requiere acceso a sus registros. Esto no elimina cachés anteriores ni limita
+el espacio que Docker puede consumir. `--disk-size` configura discos de máquinas
+virtuales y no se utiliza como límite de disco para este laboratorio con Docker.
+
+Para cambiar la asignación al crear el clúster:
+
+```bash
+MINIKUBE_MEMORY=3072 MINIKUBE_CPUS=2 make start
+```
+
+Si el perfil ya existe, Minikube puede requerir recrearlo para cambiar sus
+recursos. `make stop` detiene el clúster, pero conserva sus datos en disco.
 
 Los scripts rechazan operaciones sobre un contexto diferente de `asi-k8s`. Se
 pueden cambiar los valores predeterminados mediante las variables `PROFILE`,
