@@ -35,11 +35,13 @@ Kustomize, integrado en `kubectl`.
   descargadas y los datos acumulados.
 
 El arranque asigna 2048 MiB de RAM y desactiva la precarga y la caché adicional
-de imágenes de Minikube para reducir copias en disco. Las imágenes necesarias
-se descargan en el runtime del clúster; el primer arranque puede tardar más y
-requiere acceso a sus registros. Esto no elimina cachés anteriores ni limita
-el espacio que Docker puede consumir. `--disk-size` configura discos de máquinas
-virtuales y no se utiliza como límite de disco para este laboratorio con Docker.
+de imágenes de Minikube para reducir copias en disco. `make check` solo valida
+el manifiesto. `make start` reutiliza la imagen base del nodo (`kicbase`) que
+ya está en Docker y no la vuelve a descargar. Las imágenes de Kubernetes del
+clúster ya creado permanecen en su volumen. Esto no elimina cachés anteriores
+ni limita el espacio que Docker puede consumir. `--disk-size` configura discos
+de máquinas virtuales y no se utiliza como límite de disco para este laboratorio
+con Docker.
 
 Para cambiar la asignación al crear el clúster:
 

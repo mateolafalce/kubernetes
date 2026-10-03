@@ -7,7 +7,7 @@ En cada paso, explicá qué esperás que ocurra, ejecutá el comando y señalá 
 ## Preparación
 
 - Tené Docker en funcionamiento y los requisitos del README instalados.
-- Ensayá la secuencia antes de exponer. El primer inicio puede demorar por las descargas.
+- Ensayá la secuencia antes de exponer. `make check` y `make start` usan la imagen local ya descargada.
 - Abrí tres terminales ubicadas en la carpeta del repo:
 
   ```bash
@@ -50,7 +50,7 @@ make check
 make start
 ```
 
-> El primer comando revisa la sintaxis del script y procesa el YAML con Kustomize. El segundo inicia el clúster local usando Docker, con dos CPU y 2 GiB de memoria por defecto.
+> El primer comando revisa la sintaxis del script y procesa el YAML con Kustomize. El segundo inicia el clúster local usando Docker, con dos CPU y 2 GiB de memoria por defecto, y la imagen base que ya está en el equipo.
 
 Mostrá el nodo con estado `Ready`.
 
