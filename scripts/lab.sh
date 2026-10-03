@@ -44,6 +44,43 @@ show_status() {
   kubectl -n "${NAMESPACE}" get deployments,pods,services -o wide
 }
 
+# Minikube busca repo:tag@sha256:digest en `docker images`. La imagen local
+# puede existir por digest con otro tag. Se reetiqueta para no descargarla.
+pin_local_base_image() {
+  local minikube_home config_file image tag_ref repo digest_ref listing
+  minikube_home="${MINIKUBE_HOME:-${HOME}/.minikube}"
+  config_file="${minikube_home}/profiles/${PROFILE}/config.json"
+  image=""
+
+  if [[ -f "${config_file}" ]]; then
+    image="$(sed -n 's/.*"KicBaseImage"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' \
+      "${config_file}" | head -n 1)"
+  fi
+  if [[ -z "${image}" ]]; then
+    image="$(minikube start --help 2>&1 | \
+      sed -n "s/.*--base-image='\([^']*\)'.*/\1/p" | head -n 1)"
+  fi
+  [[ -n "${image}" ]] || die "no se pudo determinar la imagen base local de Minikube"
+
+  if [[ "${image}" == *@sha256:* ]]; then
+    tag_ref="${image%@sha256:*}"
+    repo="${tag_ref%:*}"
+    digest_ref="${repo}@${image#*@}"
+    docker image inspect "${digest_ref}" >/dev/null 2>&1 || die \
+      "falta la imagen local ${digest_ref}; el arranque no la descarga"
+    docker tag "${digest_ref}" "${tag_ref}"
+  else
+    docker image inspect "${image}" >/dev/null 2>&1 || die \
+      "falta la imagen local ${image}; el arranque no la descarga"
+  fi
+
+  listing="$(docker images --format '{{.Repository}}:{{.Tag}}@{{.Digest}}')"
+  grep -F -q -- "${image}" <<<"${listing}" || die \
+    "Docker no ofrece la imagen local ${image}; el arranque no la descarga"
+
+  printf 'Imagen base local: %s\n' "${image}"
+}
+
 start_cluster() {
   need docker
   require_kubernetes_tools
@@ -54,6 +91,7 @@ start_cluster() {
   docker info --format '{{.ServerVersion}}'
   minikube version
   kubectl version --client
+  pin_local_base_image
 
   minikube start -p "${PROFILE}" --driver=docker \
     --cpus="${MINIKUBE_CPUS}" --memory="${MINIKUBE_MEMORY}" \
@@ -202,7 +240,7 @@ usage() {
 Uso: scripts/lab.sh COMANDO [ARGUMENTOS]
 
 Comandos:
-  start              comprueba requisitos e inicia el perfil asi-k8s
+  start              inicia el perfil asi-k8s con la imagen base local
   validate           analiza y renderiza el manifiesto localmente
   deploy             aplica el manifiesto y espera las dos réplicas
   status             muestra Deployment, Pods y Service
