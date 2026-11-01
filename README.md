@@ -10,15 +10,17 @@ manual y reposición automática de Pods.
 El archivo `kubernetes-lab.yaml` declara cuatro recursos:
 
 - `Namespace/tp-kubernetes`: aísla los recursos del laboratorio.
-- `ConfigMap/portal-config`: contiene la configuración de NGINX y las respuestas
-  de `/` y `/healthz`.
+- `ConfigMap/portal-config`: contiene la configuración de NGINX, la página del
+  navegador y las respuestas de `/` y `/healthz`.
 - `Deployment/portal`: mantiene inicialmente dos réplicas, define recursos y
   verifica salud y disponibilidad mediante probes HTTP.
 - `Service/portal`: expone los Pods con un punto de acceso estable de tipo
   `NodePort`.
 
 Cada respuesta de `/` incluye el hostname del contenedor, que en Kubernetes
-coincide con el nombre del Pod que atendió la solicitud.
+coincide con el nombre del Pod que atendió la solicitud. Un navegador recibe
+una página que muestra ese Pod y el reparto entre instancias. `curl` y
+`make requests` siguen recibiendo el texto plano.
 `kustomization.yaml` permite analizar y renderizar los recursos localmente con
 Kustomize, integrado en `kubectl`.
 
@@ -84,7 +86,9 @@ TP_URL='http://127.0.0.1:PUERTO' make requests
 ```
 
 La salida debe mostrar `Portal academico - ASI 2026` y distintos nombres de Pod.
-No se garantiza alternancia estricta entre las instancias.
+No se garantiza alternancia estricta entre las instancias. Abrir la misma URL
+en el navegador muestra la página. Los botones repiten la consulta y grafican
+qué Pod respondió.
 
 Escalar a cuatro réplicas y verificar el estado:
 

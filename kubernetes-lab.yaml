@@ -20,15 +20,42 @@ data:
     http {
       access_log /dev/stdout;
       error_log /dev/stderr warn;
+      gzip off;
+
+      map $http_accept $portal_destination {
+        default "plain";
+        "~*text/html" "html";
+      }
 
       server {
         listen 8080;
         server_tokens off;
+        keepalive_timeout 0;
+        keepalive_requests 1;
 
+        # Navegador: página. curl y make requests: texto con el nombre del Pod.
         location / {
+          if ($portal_destination = "html") {
+            rewrite ^ /_portal last;
+          }
+
           default_type text/plain;
-          add_header Cache-Control "no-store";
+          add_header Cache-Control "no-store" always;
+          add_header Vary "Accept" always;
           return 200 "Portal academico - ASI 2026\nPod: $hostname\n";
+        }
+
+        location = /_portal {
+          internal;
+          root /etc/nginx;
+          rewrite ^ /portal.html break;
+          default_type text/html;
+          charset utf-8;
+          sendfile off;
+          sub_filter_once on;
+          sub_filter "__POD__" "$hostname";
+          add_header Cache-Control "no-store" always;
+          add_header Vary "Accept" always;
         }
 
         location = /healthz {
@@ -38,6 +65,543 @@ data:
         }
       }
     }
+  portal.html: |
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Portal académico · ASI 2026</title>
+      <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect fill='%235ee0d0' width='16' height='16' rx='3'/%3E%3C/svg%3E">
+      <style>
+        :root {
+          --pod: #7eb6ff;
+          --bg: #12171e;
+          --panel: #1b232e;
+          --line: #314052;
+          --text: #f4f7fb;
+          --muted: #a9b6c6;
+          color-scheme: dark;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { height: 100%; }
+
+        body {
+          margin: 0;
+          min-height: 100%;
+          display: flex;
+          background: var(--bg);
+          color: var(--text);
+          font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body::before {
+          content: "";
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 5px;
+          background: var(--pod);
+        }
+
+        .glow {
+          position: fixed;
+          width: 34rem;
+          height: 34rem;
+          right: -8rem;
+          top: -12rem;
+          background: radial-gradient(circle, var(--pod) 0%, transparent 68%);
+          opacity: 0.16;
+          pointer-events: none;
+        }
+
+        .wrap {
+          width: min(1120px, 100%);
+          margin: auto;
+          padding: 32px 48px;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          z-index: 1;
+        }
+
+        header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          gap: 24px;
+          padding-bottom: 22px;
+          border-bottom: 1px solid var(--line);
+        }
+
+        h1 {
+          margin: 0;
+          font-size: 1.7rem;
+          font-weight: 600;
+          letter-spacing: -0.03em;
+        }
+
+        .sub {
+          margin: 8px 0 0;
+          color: var(--muted);
+          font-size: 1.05rem;
+        }
+
+        .meta {
+          margin: 0;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          color: var(--text);
+          font-size: 1rem;
+        }
+
+        .sep {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: var(--muted);
+        }
+
+        main {
+          display: flex;
+          flex-direction: column;
+          padding: 32px 0 4px;
+        }
+
+        .hero {
+          border-left: 8px solid var(--pod);
+          padding: 4px 0 4px 22px;
+        }
+
+        .label {
+          margin: 0;
+          color: var(--muted);
+          font-size: 0.95rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+        }
+
+        .pod {
+          margin: 10px 0 0;
+          color: var(--pod);
+          font-family: ui-monospace, "DejaVu Sans Mono", monospace;
+          font-size: clamp(1.8rem, 3.1vw, 3.15rem);
+          font-weight: 600;
+          line-height: 1.15;
+          letter-spacing: -0.03em;
+          overflow-wrap: anywhere;
+        }
+
+        .actions {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 12px;
+          margin-top: 28px;
+        }
+
+        button {
+          font: inherit;
+          font-weight: 600;
+          font-size: 1.02rem;
+          height: 52px;
+          padding: 0 20px;
+          border-radius: 12px;
+          cursor: pointer;
+        }
+
+        button:disabled { opacity: 0.4; cursor: default; }
+
+        button:focus-visible {
+          outline: 2px solid var(--text);
+          outline-offset: 3px;
+        }
+
+        .primary {
+          background: var(--text);
+          color: #141a22;
+          border: 0;
+        }
+
+        .secondary {
+          background: transparent;
+          color: var(--text);
+          border: 1px solid #8ea0b5;
+        }
+
+        .progress {
+          margin: 0 0 0 8px;
+          min-width: 6.5rem;
+          min-height: 1.2em;
+          color: var(--muted);
+          font-variant-numeric: tabular-nums;
+          font-size: 1.05rem;
+        }
+
+        .panel {
+          margin-top: 32px;
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 18px;
+          padding: 20px 22px 16px;
+        }
+
+        .panel-head {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          gap: 16px;
+          margin-bottom: 8px;
+        }
+
+        h2 {
+          margin: 0;
+          font-size: 0.92rem;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--muted);
+        }
+
+        #caption {
+          margin: 0;
+          font-size: 1rem;
+        }
+
+        .row {
+          display: grid;
+          grid-template-columns: max-content minmax(8rem, 1fr) 2.4rem;
+          gap: 14px;
+          align-items: center;
+          margin: 8px 0;
+          padding: 7px 10px;
+          border-radius: 10px;
+        }
+
+        .row.current {
+          background: color-mix(in srgb, var(--pod) 16%, transparent);
+        }
+
+        .name {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-family: ui-monospace, "DejaVu Sans Mono", monospace;
+          font-size: 0.98rem;
+        }
+
+        .swatch {
+          width: 11px;
+          height: 11px;
+          border-radius: 50%;
+          flex: none;
+        }
+
+        .track {
+          display: block;
+          height: 14px;
+          background: #2a3544;
+          border-radius: 999px;
+          overflow: hidden;
+        }
+
+        .fill {
+          display: block;
+          height: 100%;
+          width: 0;
+          border-radius: 999px;
+          transition: width 0.28s ease;
+        }
+
+        .count {
+          font-variant-numeric: tabular-nums;
+          text-align: right;
+          font-size: 1.05rem;
+        }
+
+        .hint {
+          margin: 8px 0 2px;
+          color: var(--muted);
+          font-size: 0.95rem;
+        }
+
+        footer {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 18px;
+          margin-top: 8px;
+          padding-top: 18px;
+          border-top: 1px solid var(--line);
+        }
+
+        footer span {
+          display: block;
+          margin-bottom: 4px;
+          color: var(--muted);
+          font-size: 0.78rem;
+          letter-spacing: 0.07em;
+          text-transform: uppercase;
+        }
+
+        footer strong {
+          font-family: ui-monospace, "DejaVu Sans Mono", monospace;
+          font-weight: 600;
+          font-size: 1.02rem;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .fill { transition: none; }
+        }
+
+        @media (max-width: 760px) {
+          .wrap { padding: 28px 18px 20px; }
+          header, footer { display: block; }
+          .meta { margin-top: 14px; }
+          footer div + div { margin-top: 14px; }
+          .row { grid-template-columns: 1fr; gap: 6px; }
+          .count { text-align: left; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="glow"></div>
+      <div class="wrap">
+        <header>
+          <div>
+            <h1>Portal académico</h1>
+            <p class="sub">El Service reparte cada pedido entre los Pods.</p>
+          </div>
+          <p class="meta">
+            <span>ASI 2026</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span>tp-kubernetes</span>
+          </p>
+        </header>
+        <main>
+          <div class="hero">
+            <p class="label">Esta respuesta la atendió</p>
+            <p id="pod" class="pod">__POD__</p>
+          </div>
+          <div class="actions">
+            <button type="button" class="primary" id="once">Nueva solicitud</button>
+            <button type="button" class="secondary" id="burst">Ráfaga × 20</button>
+            <p id="progress" class="progress"></p>
+          </div>
+          <section class="panel" aria-labelledby="reparto-title">
+            <div class="panel-head">
+              <h2 id="reparto-title">Reparto</h2>
+              <p id="caption">Carga inicial</p>
+            </div>
+            <div id="bars"></div>
+            <p class="hint">Cada barra es un Pod. Crece con las respuestas que atendió en esta acción.</p>
+          </section>
+        </main>
+        <footer>
+          <div><span>Namespace</span><strong>tp-kubernetes</strong></div>
+          <div><span>Service</span><strong>portal</strong></div>
+          <div><span>Deployment</span><strong>portal</strong></div>
+        </footer>
+      </div>
+      <script>
+        (function () {
+          "use strict";
+
+          var palette = ["#5ee0d0", "#f0b429", "#7eb6ff", "#ff8f70", "#c9a6ff", "#9be07a", "#f59ac4", "#7fd4ef"];
+          var podEl = document.getElementById("pod");
+          var captionEl = document.getElementById("caption");
+          var barsEl = document.getElementById("bars");
+          var progressEl = document.getElementById("progress");
+          var onceBtn = document.getElementById("once");
+          var burstBtn = document.getElementById("burst");
+          var counts = {};
+          var goal = 1;
+          var busy = false;
+
+          function colorFor(name) {
+            var hash = 5381;
+            var i;
+            for (i = 0; i < name.length; i += 1) {
+              hash = ((hash * 33) + name.charCodeAt(i)) >>> 0;
+            }
+            return palette[hash % palette.length];
+          }
+
+          function setBusy(value) {
+            busy = value;
+            onceBtn.disabled = value;
+            burstBtn.disabled = value;
+            barsEl.setAttribute("aria-busy", value ? "true" : "false");
+          }
+
+          function showPod(name) {
+            document.documentElement.style.setProperty("--pod", colorFor(name));
+            podEl.textContent = name;
+          }
+
+          function findRow(name) {
+            return barsEl.querySelector('[data-pod="' + CSS.escape(name) + '"]');
+          }
+
+          function buildRow(name) {
+            var row = document.createElement("div");
+            var nameEl = document.createElement("span");
+            var swatch = document.createElement("span");
+            var text = document.createElement("span");
+            var track = document.createElement("span");
+            var fill = document.createElement("span");
+            var count = document.createElement("span");
+            var color = colorFor(name);
+
+            row.className = "row";
+            row.dataset.pod = name;
+            nameEl.className = "name";
+            swatch.className = "swatch";
+            swatch.style.background = color;
+            text.className = "n";
+            text.textContent = name;
+            nameEl.append(swatch, text);
+            track.className = "track";
+            fill.className = "fill";
+            fill.style.background = color;
+            track.append(fill);
+            count.className = "count";
+            row.append(nameEl, track, count);
+            return row;
+          }
+
+          function renderBars(current) {
+            var names = Object.keys(counts).sort();
+            var i;
+            var name;
+            var row;
+            var percent;
+
+            for (i = 0; i < names.length; i += 1) {
+              name = names[i];
+              row = findRow(name);
+              if (!row) {
+                row = buildRow(name);
+                barsEl.appendChild(row);
+              }
+              percent = Math.round((counts[name] / goal) * 100);
+              row.querySelector(".fill").style.width = percent + "%";
+              row.querySelector(".count").textContent = String(counts[name]);
+              row.classList.toggle("current", name === current);
+            }
+
+            for (i = 0; i < names.length; i += 1) {
+              row = findRow(names[i]);
+              if (row) {
+                barsEl.appendChild(row);
+              }
+            }
+
+            Array.prototype.slice.call(barsEl.children).forEach(function (child) {
+              if (!counts[child.dataset.pod]) {
+                child.remove();
+              }
+            });
+          }
+
+          function record(name) {
+            counts[name] = (counts[name] || 0) + 1;
+            showPod(name);
+            renderBars(name);
+          }
+
+          function resetCounts() {
+            counts = {};
+            barsEl.textContent = "";
+          }
+
+          function ask() {
+            var url = "/?r=" + Date.now() + "-" + Math.random().toString(16).slice(2);
+            return fetch(url, {
+              cache: "no-store",
+              headers: {
+                "Accept": "text/plain",
+                "Cache-Control": "no-cache"
+              }
+            }).then(function (response) {
+              if (!response.ok) {
+                throw new Error(String(response.status));
+              }
+              return response.text();
+            }).then(function (text) {
+              var match = text.match(/Pod:\s*(\S+)/);
+              if (!match) {
+                throw new Error("respuesta");
+              }
+              return match[1];
+            });
+          }
+
+          function once() {
+            if (busy) {
+              return Promise.resolve();
+            }
+            setBusy(true);
+            captionEl.textContent = "Última solicitud";
+            progressEl.textContent = "";
+            goal = 1;
+            resetCounts();
+            return ask().then(function (name) {
+              record(name);
+            }).catch(function () {
+              progressEl.textContent = "No se pudo consultar el portal.";
+            }).then(function () {
+              setBusy(false);
+            });
+          }
+
+          function burst() {
+            var n;
+            if (busy) {
+              return;
+            }
+            setBusy(true);
+            captionEl.textContent = "Ráfaga de 20";
+            progressEl.textContent = "0 de 20";
+            goal = 20;
+            resetCounts();
+
+            n = 0;
+            function step() {
+              n += 1;
+              progressEl.textContent = n + " de 20";
+              return ask().then(function (name) {
+                record(name);
+                if (n < 20) {
+                  return new Promise(function (resolve) {
+                    requestAnimationFrame(function () { resolve(); });
+                  }).then(step);
+                }
+              });
+            }
+
+            step().catch(function () {
+              progressEl.textContent = "La ráfaga se interrumpió.";
+            }).then(function () {
+              setBusy(false);
+            });
+          }
+
+          onceBtn.addEventListener("click", once);
+          burstBtn.addEventListener("click", burst);
+
+          var initial = (podEl.textContent || "").trim();
+          if (initial && initial !== "__POD__" && initial.indexOf("<") === -1) {
+            goal = 1;
+            record(initial);
+          }
+        })();
+      </script>
+    </body>
+    </html>
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -100,6 +664,10 @@ spec:
             - name: config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
+              readOnly: true
+            - name: config
+              mountPath: /etc/nginx/portal.html
+              subPath: portal.html
               readOnly: true
       volumes:
         - name: config

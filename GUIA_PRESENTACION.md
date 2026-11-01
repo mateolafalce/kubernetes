@@ -84,7 +84,9 @@ make url
 
 Copiá la URL que devuelve. Si el comando mantiene un túnel, dejá esa terminal abierta.
 
-En la terminal A, reemplazá `PUERTO` por el valor real de la URL:
+Abrí esa URL en el navegador. La página muestra el Pod que atendió la carga, con un color propio. **Nueva solicitud** pide otra respuesta. **Ráfaga × 20** hace veinte pedidos y dibuja cuántos atendió cada Pod. Si cambian el nombre y el color, el Service está repartiendo.
+
+En la terminal A, para la evidencia en texto, reemplazá `PUERTO` por el valor real de la URL:
 
 ```bash
 TP_URL='http://127.0.0.1:PUERTO' make requests
@@ -121,7 +123,7 @@ make scale-up
 
 > Estamos cambiando manualmente la cantidad deseada de réplicas de dos a cuatro. Kubernetes crea las dos instancias adicionales.
 
-Mostrá cómo aparecen los nuevos Pods y esperá el resultado final: cuatro Pods listos y Deployment `4/4`.
+Mostrá cómo aparecen los nuevos Pods y esperá el resultado final: cuatro Pods listos y Deployment `4/4`. En el navegador, lanzá otra ráfaga. El reparto pasa a incluir los Pods nuevos.
 
 > Esto es escalado horizontal: aumentamos la cantidad de instancias. En esta demostración, el escalado lo solicitamos nosotros.
 
@@ -147,7 +149,7 @@ Señalá:
 
 > Kubernetes detecta que falta una instancia y crea otra para volver al estado declarado.
 
-La transición puede ser rápida: apoyate también en los nombres que imprime el script.
+La transición puede ser rápida: apoyate también en los nombres que imprime el script. En el navegador, lanzá otra ráfaga. El Pod eliminado ya no atiende, y aparece el nombre del reemplazo.
 
 **Captura:** terminación del Pod y aparición de su reemplazo, usando la salida de la terminal C y del script.
 
